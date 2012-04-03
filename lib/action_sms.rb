@@ -1,3 +1,4 @@
+require 'logger'
 require 'abstract_controller'
 
 require 'action_sms/config'

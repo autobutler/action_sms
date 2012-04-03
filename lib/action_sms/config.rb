@@ -13,5 +13,15 @@ module ActionSms
     def options
       @options ||= {}
     end
+    
+    def logger
+      @logger ||= if defined?(Rails.logger)
+        Rails.logger
+      elsif defined?(RAILS_DEFAULT_LOGGER)
+        RAILS_DEFAULT_LOGGER
+      else
+        Logger.new(STDOUT)
+      end
+    end
   end
 end
