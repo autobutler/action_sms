@@ -32,6 +32,10 @@ module ActionSms
       ActionSms::provider.deliver(self)
     end
 
+	def sent?
+      sent
+	end
+
     def after_send(delivered, status_message)
       block.call(delivered, status_message) if block.present?
       @sent = true
