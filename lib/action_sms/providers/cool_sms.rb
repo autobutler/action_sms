@@ -6,7 +6,7 @@ module ActionSms
       SMS_GATEWAY_ERROR = "SMS Gateway Error Code: %s"
 
       def self.url(message)
-        URI("http://sms.coolsmsc.dk:8080/?username=#{ActionSms::options[:user]}&password=#{ActionSms::options[:password]}&to=45#{message.phone_number}&from=#{ActionSms::options[:from]}&message=#{CGI::escape(message.body.encode("Windows-1252"))}")
+        URI("http://sms.coolsmsc.dk:8080/?username=#{ActionSms::options[:user]}&password=#{ActionSms::options[:password]}&to=#{message.phone_number}&from=#{ActionSms::options[:from]}&message=#{CGI::escape(message.body.encode("Windows-1252"))}")
       end
       
       def self.deliver(m)

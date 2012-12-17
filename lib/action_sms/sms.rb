@@ -19,7 +19,7 @@ module ActionSms
     end
     
     def valid?
-      @phone_number.match(/[0-9]{8}/)
+      @phone_number =~ /[0-9]{8}[0-9]*/
     end
     
     # Returns true if the SMS was sent successfully.
@@ -32,9 +32,9 @@ module ActionSms
       ActionSms::provider.deliver(self)
     end
 
-	def sent?
+  	def sent?
       sent
-	end
+  	end
 
     def after_send(delivered, status_message)
       block.call(delivered, status_message) if block.present?
