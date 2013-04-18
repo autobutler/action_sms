@@ -10,7 +10,7 @@ module ActionSms
         uri += "&to=#{message.phone_number}"
         uri += "&from=#{ActionSms::options[:from]}"
         uri += "&message=#{CGI::escape(message.body.encode("Windows-1252"))}"
-        uri += "&status=on&status_url=#{message.status_report_url}" if message.status_report_url.present?
+        uri += "&status=on&statusurl=#{message.status_report_url}" if message.status_report_url.present?
         URI(uri)
       end
       
