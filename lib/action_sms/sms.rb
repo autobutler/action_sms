@@ -5,7 +5,7 @@ module ActionSms
   class SMS
     INVALID_PHONE_NUMBER = "Invalid phone number: %s"
 
-    attr_accessor :phone_number, :body, :block
+    attr_accessor :phone_number, :body, :block, :status_report_url, :message_id
     
     def initialize(phone = "", body = "")
       @phone_number = phone.gsub(/\s+/,'')

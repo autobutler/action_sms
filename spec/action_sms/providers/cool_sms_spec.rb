@@ -43,7 +43,7 @@ describe ActionSms::Providers::CoolSmsProvider do
     end
 
     it "for incorrect phone numbers" do
-      Net::HTTP.stub!(:get_response).and_return(stub(:code => "200"))
+      Net::HTTP.stub!(:get_response).and_return(stub(:code => "200", :body => "status=success&msgid=12345"))
       m = ActionSms::SMS.new("1234abcd", "the text")
       m.block = Proc.new do |status, msg|
         status.should == false
@@ -54,11 +54,12 @@ describe ActionSms::Providers::CoolSmsProvider do
     end
 
     it "for normal SMS deliveries" do
-      Net::HTTP.stub!(:get_response).and_return(stub(:code => "200"))
+      Net::HTTP.stub!(:get_response).and_return(stub(:code => "200", :body => "status=success&msgid=12345"))
       m = ActionSms::SMS.new("12345678", "the text")
       m.block = Proc.new do |status,msg|
         status.should == true
         msg.should == "SMS sent"
+        m.message_id.should == "12345"
       end
       m.deliver
     end
