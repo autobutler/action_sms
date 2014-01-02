@@ -7,11 +7,12 @@ require "action_sms/version"
 Gem::Specification.new do |s|
   s.name        = "action_sms"
   s.version     = ActionSms::VERSION
-  s.authors     = ["Jens Henrik Hertz"]
-  s.email       = ["jens@autobutler.dk"]
+  s.authors     = ["Jens Henrik Hertz", "Mads Ohm Larsen"]
+  s.email       = ["jens@autobutler.dk", "mads@autobutler.dk"]
   s.homepage    = "http://www.autobutler.dk"
   s.summary     = "Framework for sending SMS messages"
   s.description = "ActionSms is a simple plugin for sending SMS messages, not unlike the way, ActionMailer works."
+  s.licenses    = "MIT"
 
   s.files = Dir["lib/**/*", "CHANGELOG", "README.rdoc", "MIT-LICENSE"]
   s.require_path = 'lib'
@@ -19,7 +20,6 @@ Gem::Specification.new do |s|
   s.add_dependency('rails', '>= 3.0')
   s.add_dependency('activesupport', '>= 2.3.11')
 
-  s.add_development_dependency "rails"
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "rspec-rails"
   s.add_development_dependency "guard-rspec"
