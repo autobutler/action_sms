@@ -1,6 +1,8 @@
 module ActionSms
   # Implementation
   class Base < AbstractController::Base
+    include ActionView::ViewPaths
+
     class << self
       def respond_to?(method, include_private = false) #:nodoc:
         super || action_methods.include?(method.to_s)
