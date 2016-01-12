@@ -16,7 +16,7 @@ module ActionSms
           body = {
             message: {
               recipients: message.phone_number,
-              sender: ActionSMS::options[:from],
+              sender: message.from,
               message: message.body
             }
           }

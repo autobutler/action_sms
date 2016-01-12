@@ -73,4 +73,28 @@ describe ActionSms::Providers::CoolSmsProvider do
       ActionSms::Providers::CoolSmsProvider.url(sms)
     }.to_not raise_error
   end
+
+  it "allows overriding the sender" do
+    stub_request(:get, "http://sms.coolsmsc.dk:8080/?from=foo%20bar&message=the%20text&password=myPassword&resulttype=urlencoded&to=12345678&username=myUser").
+      to_return(:status => 200, :body => "status=success&msgid=12345", :headers => {})
+    m = ActionSms::SMS.new("12345678", "the text", "foo bar")
+    m.block = Proc.new do |status,msg|
+      expect(status).to eq true
+      expect(msg).to eq "SMS sent"
+      expect(m.message_id).to eq "12345"
+    end
+    m.deliver_now
+  end
+
+  it "allows setting values via headers" do
+    stub_request(:get, "http://sms.coolsmsc.dk:8080/?from=foo%20bar&message=the%20text&password=myPassword&resulttype=urlencoded&to=12345678&username=myUser").
+      to_return(:status => 200, :body => "status=success&msgid=12345", :headers => {})
+    expect(
+      ActionSms::Base.new.sms(
+        phone_number: "12345678",
+        body:         "the text",
+        from:         "foo bar"
+      ).deliver_now
+    ).to eq true
+  end
 end
