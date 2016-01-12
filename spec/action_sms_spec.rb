@@ -7,7 +7,7 @@ describe ActionSms do
   
   it "should be able to set an option" do
     ActionSms::options[:user] = "halfdan"
-    ActionSms::options.should have_key(:user)
-    ActionSms::options[:user].should == "halfdan"
+    expect(ActionSms::options).to have_key(:user)
+    expect(ActionSms::options[:user]).to eq "halfdan"
   end
 end

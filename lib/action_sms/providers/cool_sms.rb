@@ -1,3 +1,5 @@
+require 'rack'
+
 module ActionSms
   module Providers
     class CoolSmsProvider < Provider

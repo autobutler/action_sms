@@ -15,60 +15,62 @@ describe ActionSms::Providers::CoolSmsProvider do
   it "should set the username and password in the url correctly" do
     m = ActionSms::SMS.new("12345678", "the text")
     url = ActionSms::provider.url(m).to_s
-    url.should include("myUser")
-    url.should include("myPassword")
+    expect(url).to include("myUser")
+    expect(url).to include("myPassword")
   end
   
   describe "has correct error string" do
     it "for http errors" do
-      Net::HTTP.stub!(:get_response).and_raise(StandardError.new("expected error"))
+      stub_request(:get, "http://sms.coolsmsc.dk:8080/?from=&message=the%20text&password=myPassword&resulttype=urlencoded&to=12345678&username=myUser").
+        to_raise(StandardError.new("expected error"))
       m = ActionSms::SMS.new("12345678", "the text")
       m.block = Proc.new do |status, msg|
-        status.should == false
-        msg.should include("Exception")
-        msg.should include("expected error")
+        expect(status).to eq false
+        expect(msg).to include("Exception")
+        expect(msg).to include("expected error")
       end
-      m.deliver
+      m.deliver_now
     end
     
     it "for SMS gateway errors" do
-      Net::HTTP.stub!(:get_response).and_return(stub(:code => "701"))
+      stub_request(:get, "http://sms.coolsmsc.dk:8080/?from=&message=the%20text&password=myPassword&resulttype=urlencoded&to=12345678&username=myUser").
+        to_return(:status => 701, :body => "", :headers => {})
       m = ActionSms::SMS.new("12345678", "the text")
       m.block = Proc.new do |status, msg|
-        status.should == false
-        msg.should include("SMS Gateway Error Code")
-        msg.should include("701")
+        expect(status).to eq false
+        expect(msg).to include("SMS Gateway Error Code")
+        expect(msg).to include("701")
       end
-      m.deliver
+      m.deliver_now
     end
 
     it "for incorrect phone numbers" do
-      Net::HTTP.stub!(:get_response).and_return(stub(:code => "200", :body => "status=success&msgid=12345"))
       m = ActionSms::SMS.new("1234abcd", "the text")
       m.block = Proc.new do |status, msg|
-        status.should == false
-        msg.should include("Invalid phone number")
-        msg.should include("1234abcd")
+        expect(status).to eq false
+        expect(msg).to include("Invalid phone number")
+        expect(msg).to include("1234abcd")
       end
-      m.deliver
+      m.deliver_now
     end
 
     it "for normal SMS deliveries" do
-      Net::HTTP.stub!(:get_response).and_return(stub(:code => "200", :body => "status=success&msgid=12345"))
+      stub_request(:get, "http://sms.coolsmsc.dk:8080/?from=&message=the%20text&password=myPassword&resulttype=urlencoded&to=12345678&username=myUser").
+        to_return(:status => 200, :body => "status=success&msgid=12345", :headers => {})
       m = ActionSms::SMS.new("12345678", "the text")
       m.block = Proc.new do |status,msg|
-        status.should == true
-        msg.should == "SMS sent"
-        m.message_id.should == "12345"
+        expect(status).to eq true
+        expect(msg).to eq "SMS sent"
+        expect(m.message_id).to eq "12345"
       end
-      m.deliver
+      m.deliver_now
     end
   end
   
   it "escapes message bodies correctly" do
-    lambda {
+    expect {
       sms = ActionSms::SMS.new("12345678", "the_test_/&?æøå\\\\\\\\")
       ActionSms::Providers::CoolSmsProvider.url(sms)
-    }.should_not raise_error
+    }.to_not raise_error
   end
 end

@@ -23,9 +23,7 @@ module ActionSms
     end
 
     def deliver
-      if defined?(Rails)
-        Rails.logger.warn '[DEPRECATION] `deliver` is deprecated.  Please use `deliver_now` instead.'
-      end
+      warn '[DEPRECATION] `deliver` is deprecated.  Please use `deliver_now` instead.'
       deliver_now
     end
 
