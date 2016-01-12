@@ -7,18 +7,18 @@ describe ActionSms::Providers::CoolSmsProvider do
     ActionSms::provider = :cool_sms
     ActionSms::options = { :user => "myUser", :password => "myPassword" }
   end
-  
+
   after do
     ActionSms::provider = :test
   end
-  
+
   it "should set the username and password in the url correctly" do
     m = ActionSms::SMS.new("12345678", "the text")
     url = ActionSms::provider.url(m).to_s
     expect(url).to include("myUser")
     expect(url).to include("myPassword")
   end
-  
+
   describe "has correct error string" do
     it "for http errors" do
       stub_request(:get, "http://sms.coolsmsc.dk:8080/?from=&message=the%20text&password=myPassword&resulttype=urlencoded&to=12345678&username=myUser").
@@ -31,7 +31,7 @@ describe ActionSms::Providers::CoolSmsProvider do
       end
       m.deliver_now
     end
-    
+
     it "for SMS gateway errors" do
       stub_request(:get, "http://sms.coolsmsc.dk:8080/?from=&message=the%20text&password=myPassword&resulttype=urlencoded&to=12345678&username=myUser").
         to_return(:status => 701, :body => "", :headers => {})
@@ -66,7 +66,7 @@ describe ActionSms::Providers::CoolSmsProvider do
       m.deliver_now
     end
   end
-  
+
   it "escapes message bodies correctly" do
     expect {
       sms = ActionSms::SMS.new("12345678", "the_test_/&?æøå\\\\\\\\")

@@ -6,7 +6,7 @@ describe ActionSms::SMS do
       expect(ActionSms::SMS.new(number, "the text")).to_not be_valid
     end
   end
-  
+
   it "handles valid phone numbers correctly" do
     expect(ActionSms::SMS.new("12345678", "the text")).to be_valid
   end
