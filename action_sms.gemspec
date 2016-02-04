@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency('rails', '>= 3.0')
   s.add_dependency('activesupport', '>= 2.3.11')
+  s.add_dependency('rest-client', '>= 1.8.0')
 
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "rspec-rails"

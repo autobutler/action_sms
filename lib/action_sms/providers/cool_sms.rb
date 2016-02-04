@@ -5,24 +5,31 @@ module ActionSms
       DELIVER_EXCEPTION = "Exception: %s"
       SMS_GATEWAY_ERROR = "SMS Gateway Error Code: %s"
 
-      def self.url(message)
-        uri = "http://sms.coolsmsc.dk:8080/?username=#{ActionSms::options[:user]}&password=#{ActionSms::options[:password]}&resulttype=urlencoded"
-        uri += "&to=#{message.phone_number}"
-        uri += "&from=#{ActionSms::options[:from]}"
-        uri += "&message=#{CGI::escape(message.body.encode("Windows-1252"))}"
-        uri += "&status=on&statusurl=#{message.status_report_url}" if message.status_report_url.present?
-        URI(uri)
-      end
-      
       def self.deliver(m)
         all_ok = false
 
         begin
-          response = Net::HTTP::get_response(url(m))
-          all_ok = response.code == "200"
+          url = "https://api.linkmobility.dk/v2/message.json?apikey=#{ENV['COOLSMS_API_KEY']}"
+
+          body = {
+            message: {
+              recipients: message.phone_number,
+              sender: ActionSMS::options[:from],
+              message: message.body
+            }
+          }
+
+          if message.status_report_url.present?
+            body[:message][:status] = true
+            body[:message][:statusurl] = message.status_report_url
+          end
+
+          response = RestClient.post(url, body.to_json, content_type: 'application/json')
+
+          all_ok = response.code == 201
           if all_ok
-            parsed_response = Rack::Utils.parse_query(response.body)
-            m.message_id = parsed_response["msgid"]
+            parsed_response = JSON.parse(response.body)
+            m.message_id = parsed_response['details']['batchid']
             m.after_send(true, DELIVERED_OK)
           else
             m.after_send(false, SMS_GATEWAY_ERROR % response.code)
@@ -33,7 +40,7 @@ module ActionSms
           m.after_send(false, DELIVER_EXCEPTION % e.to_s)
         end
 
-        all_ok        
+        all_ok
       end
     end
   end
