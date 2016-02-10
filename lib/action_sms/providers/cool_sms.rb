@@ -11,7 +11,7 @@ module ActionSms
         all_ok = false
 
         begin
-          url = "https://api.linkmobility.dk/v2/message.json?apikey=#{ENV['COOLSMS_API_KEY']}"
+          url = "https://api-linkmobility-dk-dsq6w2hmnzdf.runscope.net/v2/message.json?apikey=#{ENV['COOLSMS_API_KEY']}"
 
           body = {
             message: {
