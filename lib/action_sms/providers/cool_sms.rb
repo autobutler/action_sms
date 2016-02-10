@@ -7,7 +7,7 @@ module ActionSms
       DELIVER_EXCEPTION = "Exception: %s"
       SMS_GATEWAY_ERROR = "SMS Gateway Error Code: %s"
 
-      def self.deliver(m)
+      def self.deliver(message)
         all_ok = false
 
         begin
