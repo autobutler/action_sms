@@ -11,7 +11,7 @@ module ActionSms
         all_ok = false
 
         begin
-          url = "https://api-linkmobility-dk-dsq6w2hmnzdf.runscope.net/v2/message.json?apikey=#{ENV['COOLSMS_API_KEY']}"
+          url = "https://api.linkmobility.dk/v2/message.json?apikey=#{ENV['COOLSMS_API_KEY']}"
 
           phone_number = '+' + message.phone_number unless message.phone_number.starts_with?('+')
           from = message.from.blank? ? ActionSms::options[:from] : message.from
