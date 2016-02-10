@@ -31,15 +31,15 @@ module ActionSms
           all_ok = response.code == 201
           if all_ok
             parsed_response = JSON.parse(response.body)
-            m.message_id = parsed_response['details']['batchid']
-            m.after_send(true, DELIVERED_OK)
+            message.message_id = parsed_response['details']['batchid']
+            message.after_send(true, DELIVERED_OK)
           else
-            m.after_send(false, SMS_GATEWAY_ERROR % response.code)
+            message.after_send(false, SMS_GATEWAY_ERROR % response.code)
           end
         rescue URI::InvalidURIError => e
-          m.after_send(false, DELIVER_EXCEPTION % e.to_s)
+          message.after_send(false, DELIVER_EXCEPTION % e.to_s)
         rescue StandardError => e
-          m.after_send(false, DELIVER_EXCEPTION % e.to_s)
+          message.after_send(false, DELIVER_EXCEPTION % e.to_s)
         end
 
         all_ok
