@@ -7,6 +7,6 @@ describe ActionSms::Providers::TestProvider do
 
   it "should deliver test messages" do
     m = ActionSms::SMS.new("12345678", "this is a test")
-    m.deliver.should == true
+    expect(m.deliver_now).to eq true
   end
 end

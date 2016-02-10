@@ -1,33 +1,29 @@
 module ActionSms
   # Implementation
   class Base < AbstractController::Base
-    include AbstractController::Rendering
-    include AbstractController::Layouts
-    include AbstractController::Helpers
-    include AbstractController::Translation
-    include AbstractController::AssetPaths
-  
+    include ActionView::ViewPaths
+
     class << self
       def respond_to?(method, include_private = false) #:nodoc:
         super || action_methods.include?(method.to_s)
       end
-  
+
     protected
-  
+
       def method_missing(method, *args)
         return super unless respond_to?(method)
         new(method, *args).message
       end
     end
-  
+
     attr_internal :message
-  
+
     def initialize(method_name=nil, *args)
       super()
       @_message = SMS.new
       process(method_name, *args) if method_name
     end
-  
+
     def process(*args) #:nodoc:
       lookup_context.skip_default_locale!
       super
@@ -38,11 +34,11 @@ module ActionSms
 
       assignable = headers.except(:body)
       assignable.each { |k, v| m[k] = v }
-    
+
       m.body = gather_body(headers)
       m
     end
-  
+
     def gather_body(headers)
       responses = []
       if headers[:body]
@@ -60,10 +56,10 @@ module ActionSms
       end
       responses.join(" ")
     end
-  
+
     def each_template(paths, name, &block) #:nodoc:
       templates = lookup_context.find_all(name, Array.wrap(paths))
       templates.uniq_by { |t| t.formats }.each(&block)
     end
-  end  
+  end
 end
