@@ -13,10 +13,13 @@ module ActionSms
         begin
           url = "https://api-linkmobility-dk-dsq6w2hmnzdf.runscope.net/v2/message.json?apikey=#{ENV['COOLSMS_API_KEY']}"
 
+          phone_number = '+' + message.phone_number unless message.phone_number.starts_with?('+')
+          from = message.from.blank? ? ActionSms::options[:from] : message.from
+
           body = {
             message: {
-              recipients: message.phone_number,
-              sender: message.from,
+              recipients: phone_number,
+              sender: from,
               message: message.body
             }
           }
