@@ -6,6 +6,7 @@ module ActionSms
       DELIVERED_OK = "SMS sent"
       DELIVER_EXCEPTION = "Exception: %s"
       SMS_GATEWAY_ERROR = "SMS Gateway Error Code: %s"
+      FORMAT = 'UNICODE'
 
       def self.deliver(message)
         all_ok = false
@@ -20,7 +21,8 @@ module ActionSms
             message: {
               recipients: phone_number,
               sender: from,
-              message: message.body
+              message: message.body,
+              format: FORMAT
             }
           }
 
@@ -29,7 +31,7 @@ module ActionSms
             body[:message][:statusurl] = message.status_report_url
           end
 
-          response = RestClient.post(url, body.to_json, content_type: 'application/json')
+          response = RestClient.post(url, body.to_json, content_type: 'application/json; charset=utf-8')
 
           all_ok = response.code == 201
           if all_ok
