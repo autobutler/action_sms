@@ -16,9 +16,7 @@ module ActionSms
         begin
           url = 'https://wsx.sp247.net/linkdk/'
 
-          unless message.phone_number.starts_with?('+')
-            phone_number = '+' + message.phone_number
-          end
+          phone_number = message.phone_number.gsub('+', '')
           from = message.from.presence || ActionSms.options(:from)
 
           body = {
@@ -36,9 +34,9 @@ module ActionSms
             body[:statusurl] = message.status_report_url
           end
 
-          response = RestClient.post(url, body.to_json, content_type: 'application/json; charset=utf-8')
+          response = RestClient.get(url, params: body)
 
-          all_ok = response.code == 201
+          all_ok = response.code == 200
           if all_ok
             parsed_response = JSON.parse(response.body)
             message.message_id = parsed_response['details']['batchid']
